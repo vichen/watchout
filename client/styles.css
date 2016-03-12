@@ -3,6 +3,22 @@
 /* Note: an asteroid image is included in this repo.
 Feel free to use it if you like. */
 
-.asteroidPattern {
-  background-image: 'asteroid.png';
+
+@-webkit-keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+    -webkit-transform-origin: 50% 50%;
+  }
+  to { 
+    -webkit-transform: rotate(360deg);
+    -webkit-transform-origin: 50% 50%;
+  }
+}
+
+#asteroidPicture
+{
+    -webkit-animation-name:             rotate; 
+    -webkit-animation-duration:         0.5s; 
+    -webkit-animation-iteration-count:  infinite;
+    -webkit-animation-timing-function: linear;
 }

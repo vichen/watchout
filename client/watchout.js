@@ -5,8 +5,12 @@ var gameVars = {
   width: 700,
   height: 450,
   enemyR: 30,
-  playerR: 10,
-  numEnemies: 0
+  playerR: 15,
+  numEnemies: 0,
+  currentScore: 0,
+  highScore: 0,
+  collisions: 0,
+  hasCollided: false,  
 };
 
 var initGame = function(myGameVars) {
@@ -18,8 +22,7 @@ var initGame = function(myGameVars) {
       .attr('width', gameVars.width)
       .attr('height', gameVars.height);
 
-    myGameVars.svgContainer
-      .append('rect')
+    myGameVars.svgContainer.append('rect')
       .attr('x', 0)
       .attr('y', 0)
       .attr('width', gameVars.width)
@@ -28,14 +31,14 @@ var initGame = function(myGameVars) {
       .attr('fill', 'none')
       .attr('stroke-width', 'black');
 
-    myGameVars.svgContainer
-      .append('svg:pattern')
+    myGameVars.svgContainer.append('svg:pattern')
       .attr('id', 'asteroidPattern')
       .attr('width', 1)
       .attr('height', 1)
       .attr('patternUnits', 'objectBoundingBox')
       .append('svg:image')
-      .attr('xlink:href', 'asteroid.png')
+      .attr('xlink:href', 'shuriken.png')
+      .attr('id', 'asteroidPicture')
       .attr('width', 60)
       .attr('height', 60)
       .attr('x', 0)
@@ -97,31 +100,9 @@ var moveEnemies = function() {
     .attr('cx', function(d) { return d.x; })
     .attr('cy', function(d) { return d.y; })
     .tween('custom', tweenCollision);
+
+  gameVars.hasCollided = false;
 };
-
-/*
-var collide = function() {
-  var enemyCircles = d3.select('body').selectAll('#enemyCircle');
-  var player = d3.select('#playerCircle');
-  var playerX = player.attr('cx');
-  var playerY = player.attr('cy');
-  var radiusSum = gameVars.enemyR + gameVars.playerR;
-
-  enemyCircles.each(function(d, i) {
-    var enemyX = d3.select(this).attr('cx');
-    var enemyY = d3.select(this).attr('cy');
-
-
-    var separation = Math.sqrt(Math.pow(enemyX - playerX, 2) + 
-                    Math.pow(enemyY - playerY, 2));
-
-    if (separation < radiusSum) {
-      console.log('collision');
-    }
-
-  });
-};
-*/
 
 var tweenCollision = function() {
   var enemy = d3.select(this);
@@ -138,9 +119,15 @@ var tweenCollision = function() {
                     Math.pow(enemyY - playerY, 2));
 
     if (separation < radiusSum) {
-      console.log('collision');
+      if (gameVars.currentScore > gameVars.highScore) {
+        gameVars.highScore = gameVars.currentScore;
+      }
+      gameVars.currentScore = 0;
+      if (!gameVars.hasCollided) {
+        gameVars.collisions++;
+      }
+      gameVars.hasCollided = true;
     }
-
   };
 };
 
@@ -149,3 +136,9 @@ initGame(gameVars);
 addEnemy(gameVars, 10);
 addPlayer();
 setInterval(moveEnemies, 1000);
+setInterval(function() {
+  gameVars.currentScore++;
+  d3.select('.highScoreSpan').text(gameVars.highScore);
+  d3.select('.curScoreSpan').text(gameVars.currentScore);
+  d3.select('.collisionsSpan').text(gameVars.collisions);
+}, 100);

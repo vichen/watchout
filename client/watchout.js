@@ -5,6 +5,7 @@ var gameVars = {
   width: 700,
   height: 450,
   enemyR: 30,
+  playerR: 10,
   numEnemies: 0
 };
 
@@ -44,7 +45,7 @@ var initGame = function(myGameVars) {
 
 var tick = function(pt) {
   var player = d3.select('body').selectAll('#playerCircle');
-  
+
   player.attr('cx', pt[0])
         .attr('cy', pt[1]);
 };
@@ -53,7 +54,7 @@ var addPlayer = function() {
   var playerCircle = gameVars.svgContainer
     .append('circle')
     .attr('id', 'playerCircle')
-    .attr('r', 10)
+    .attr('r', gameVars.playerR)
     .attr('cx', gameVars.width / 2)
     .attr('cy', gameVars.height / 2)
     .attr('fill', 'green');
@@ -94,11 +95,57 @@ var moveEnemies = function() {
     .data(coordArray)
     .transition().duration(1000)
     .attr('cx', function(d) { return d.x; })
-    .attr('cy', function(d) { return d.y; });
+    .attr('cy', function(d) { return d.y; })
+    .tween('custom', tweenCollision);
+};
+
+/*
+var collide = function() {
+  var enemyCircles = d3.select('body').selectAll('#enemyCircle');
+  var player = d3.select('#playerCircle');
+  var playerX = player.attr('cx');
+  var playerY = player.attr('cy');
+  var radiusSum = gameVars.enemyR + gameVars.playerR;
+
+  enemyCircles.each(function(d, i) {
+    var enemyX = d3.select(this).attr('cx');
+    var enemyY = d3.select(this).attr('cy');
+
+
+    var separation = Math.sqrt(Math.pow(enemyX - playerX, 2) + 
+                    Math.pow(enemyY - playerY, 2));
+
+    if (separation < radiusSum) {
+      console.log('collision');
+    }
+
+  });
+};
+*/
+
+var tweenCollision = function() {
+  var enemy = d3.select(this);
+  return function() {
+    var player = d3.select('#playerCircle');
+    var playerX = player.attr('cx');
+    var playerY = player.attr('cy');
+    var radiusSum = gameVars.enemyR + gameVars.playerR;
+
+    var enemyX = enemy.attr('cx');
+    var enemyY = enemy.attr('cy');
+
+    var separation = Math.sqrt(Math.pow(enemyX - playerX, 2) + 
+                    Math.pow(enemyY - playerY, 2));
+
+    if (separation < radiusSum) {
+      console.log('collision');
+    }
+
+  };
 };
 
 /* init game here */
 initGame(gameVars);
 addEnemy(gameVars, 10);
 addPlayer();
-setInterval(moveEnemies, 1100);
+setInterval(moveEnemies, 1000);

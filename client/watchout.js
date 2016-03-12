@@ -28,7 +28,7 @@ var initGame = function(myGameVars) {
       .attr('width', gameVars.width)
       .attr('height', gameVars.height)
       .attr('stroke', 'black')
-      .attr('fill', 'none')
+      .attr('fill', 'black')
       .attr('stroke-width', 'black');
 
     myGameVars.svgContainer.append('svg:pattern')

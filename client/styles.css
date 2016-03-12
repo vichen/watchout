@@ -3,6 +3,14 @@
 /* Note: an asteroid image is included in this repo.
 Feel free to use it if you like. */
 
+body {
+  margin-left: 20%;
+}
+
+.scoreboard {
+  float: right;
+  margin-right: 35%;
+}
 
 @-webkit-keyframes rotate {
   from {

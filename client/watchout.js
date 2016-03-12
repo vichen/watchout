@@ -42,6 +42,27 @@ var initGame = function(myGameVars) {
   }
 };
 
+var tick = function(pt) {
+  var player = d3.select('body').selectAll('#playerCircle');
+  
+  player.attr('cx', pt[0])
+        .attr('cy', pt[1]);
+};
+
+var addPlayer = function() {
+  var playerCircle = gameVars.svgContainer
+    .append('circle')
+    .attr('id', 'playerCircle')
+    .attr('r', 10)
+    .attr('cx', gameVars.width / 2)
+    .attr('cy', gameVars.height / 2)
+    .attr('fill', 'green');
+
+  gameVars.svgContainer.on('mousemove', function() {
+    tick(d3.mouse(this));
+  });
+};
+
 var addEnemy = function(myGameVars, num) {
   if (!num) {
     num = 1;
@@ -69,7 +90,7 @@ var moveEnemies = function() {
                      y: Math.random() * (gameVars.height - (gameVars.enemyR * 2)) + gameVars.enemyR});
   }
 
-  var enemyCircles = d3.select('body').selectAll('circle')
+  var enemyCircles = d3.select('body').selectAll('#enemyCircle')
     .data(coordArray)
     .transition().duration(1000)
     .attr('cx', function(d) { return d.x; })
@@ -79,4 +100,5 @@ var moveEnemies = function() {
 /* init game here */
 initGame(gameVars);
 addEnemy(gameVars, 10);
+addPlayer();
 setInterval(moveEnemies, 1100);

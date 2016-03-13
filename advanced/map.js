@@ -32,11 +32,8 @@ d3.json('https://data.sfgov.org/api/geospatial/iacs-ws63?method=export&format=Ge
   console.log('center:' + center + ' optimal scale:' + scale + ' optimal offset:' + offset);
 
   // new projection
-  projection = d3.geo.mercator()
-              .center(center)
-              .scale(scale)
-              .translate([250, 0]);
-
+  projection = d3.geo.mercator().center(center)
+  .scale(scale).translate([250, 0]);
   path = path.projection(projection);
 
   // add a rectangle to see the bound of the svg
@@ -47,46 +44,38 @@ d3.json('https://data.sfgov.org/api/geospatial/iacs-ws63?method=export&format=Ge
     .style('fill', 'none');
 
   vis.selectAll('.neighborhood')
-    .data(json.features)
-    .enter()
-    .append('path')
-    .attr('d', path)
-    //.attr('class', function(d) { return 'neighborhood ' + d.id; })
+     .data(json.features)
+     .enter()
+     .append('path')
+     .attr('d', path)
+     //.attr('class', function(d) { return 'neighborhood ' + d.id; })
 
-    // create the outline of each neighborhood
-    .style('stroke-width', '1')
-    .style('stroke', 'black')
+     // create the outline of each neighborhood
+     .style('stroke-width', '1')
+     .style('stroke', 'black')
 
-    // make them different colors
-    .each(function (d, index) {
-      var neighborhood = d3.select(this);
-      var colors = ['#ddc', '#cdd', '#cdc', '#dcd', '#ffd699'];
-      neighborhood.style('fill', colors[(index % 5)]);
-      // console.log(d.properties.neighborho);
-      // if (d.properties.neighborho === 'North Beach') 5
-      //   myPath.style('fill', colors[2]);
-      // } else {
-      //   myPath.style('fill', colors[0]);
-      // }
-    });
-
+     // make them different colors
+     .each(function (d, index) {
+       var neighborhood = d3.select(this);
+       var colors = ['#ddc', '#cdd', '#cdc', '#dcd', '#ffd699'];
+       neighborhood.style('fill', colors[(index % 5)]);
+       // console.log(d.properties.neighborho);
+       // if (d.properties.neighborho === 'North Beach') 5
+       //   myPath.style('fill', colors[2]);
+       // } else {
+       //   myPath.style('fill', colors[0]);
+       // }
+     });
 
   vis.selectAll('.name-label')
-    .data(json.features)
-    .enter().append('text')
-    .attr('class', function(d) { return 'name-label ' + d.properties.neighborho; })
-    .attr('transform', function(d) { return 'translate(' + path.centroid(d) + ')'; })
-    //.attr('dy', '.35em')
-    .text(function(d) { return d.properties.neighborho; });
+   .data(json.features)
+   .enter().append('text')
+   .attr('class', function(d) { return 'name-label ' + d.properties.neighborho; })
+   .attr('transform', function(d) { return 'translate(' + path.centroid(d) + ')'; })
+   //.attr('dy', '.35em')
+   .text(function(d) { return d.properties.neighborho; });
 
-  
-    // .subunit.SCT { fill: #ddc; }
-    // .subunit.WLS { fill: #cdd; }
-    // .subunit.NIR { fill: #cdc; }
-    // .subunit.ENG { fill: #dcd; }
-    // .subunit.IRL { display: none; }
-
-  // make map draggable
+  // make the map draggable
   var drag = d3.behavior.drag()  
      .on('dragstart', function() {
        m0 = [d3.event.sourceEvent.pageX, d3.event.sourceEvent.pageY];
